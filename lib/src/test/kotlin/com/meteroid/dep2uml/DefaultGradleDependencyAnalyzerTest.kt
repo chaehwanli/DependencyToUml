@@ -4,11 +4,13 @@ import io.mockk.every
 import io.mockk.mockk
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.artifacts.ResolvedConfiguration
 import org.gradle.api.artifacts.ResolvedDependency
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import com.meteroid.dep2uml.analyzer.DefaultGradleDependencyAnalyzer
 
 class DefaultGradleDependencyAnalyzerTest {
     
@@ -17,12 +19,14 @@ class DefaultGradleDependencyAnalyzerTest {
         // Given
         val analyzer = DefaultGradleDependencyAnalyzer()
         val project = mockk<Project>()
+        val configurations = mockk<ConfigurationContainer>()
         val configuration = mockk<Configuration>()
         val resolvedConfiguration = mockk<ResolvedConfiguration>()
         val resolvedDependency = mockk<ResolvedDependency>()
         
         // Mock setup
-        every { project.configurations } returns setOf(configuration)
+        every { project.configurations } returns configurations
+        every { configurations.iterator() } returns mutableSetOf(configuration).iterator()
         every { configuration.isCanBeResolved } returns true
         every { configuration.resolvedConfiguration } returns resolvedConfiguration
         every { resolvedConfiguration.firstLevelModuleDependencies } returns setOf(resolvedDependency)

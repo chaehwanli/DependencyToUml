@@ -32,6 +32,9 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation(kotlin("test-junit5"))
     
+    // MockK 의존성 추가
+    testImplementation("io.mockk:mockk:1.13.8")  // 최신 안정 버전
+    
     // JUnit 의존성
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.11.1")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.11.1")

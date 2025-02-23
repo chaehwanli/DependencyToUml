@@ -16,6 +16,7 @@ bin/
 *.war
 *.ear
 *.log
+.kotlin/
 
 # OS specific
 .DS_Store
