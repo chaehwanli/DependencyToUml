@@ -1,6 +1,25 @@
-.gradle
-**/build/
-!src/**/build/
+# Gradle
+.gradle/
+build/
+bin/
+
+# IDE
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+
+# Kotlin
+*.class
+*.jar
+*.war
+*.ear
+*.log
+
+# OS specific
+.DS_Store
+Thumbs.db
 
 # Ignore Gradle GUI config
 gradle-app.setting

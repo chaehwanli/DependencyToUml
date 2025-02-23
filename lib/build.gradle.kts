@@ -9,11 +9,14 @@
 plugins {
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
+    `kotlin-dsl`
+    kotlin("jvm") version "1.9.21"
 }
 
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
+    gradlePluginPortal()
 }
 
 dependencies {
@@ -22,6 +25,18 @@ dependencies {
 
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation(libs.guava)
+    implementation(kotlin("stdlib"))
+    implementation(gradleApi())
+    
+    // Kotlin Test 의존성 추가
+    testImplementation(kotlin("test"))
+    testImplementation(kotlin("test-junit5"))
+    
+    // JUnit 의존성
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.11.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.11.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.11.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-migrationsupport:5.11.1")
 }
 
 testing {
@@ -39,4 +54,8 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
     }
+}
+
+tasks.test {
+    useJUnitPlatform()  // JUnit 5 사용 설정
 }
