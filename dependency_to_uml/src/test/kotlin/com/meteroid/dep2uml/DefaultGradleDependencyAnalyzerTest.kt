@@ -9,8 +9,6 @@ import org.gradle.api.artifacts.ResolvedConfiguration
 import org.gradle.api.artifacts.ResolvedDependency
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
-import com.meteroid.dep2uml.analyzer.DefaultGradleDependencyAnalyzer
 
 class DefaultGradleDependencyAnalyzerTest {
     
