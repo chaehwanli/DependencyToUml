@@ -191,36 +191,46 @@ class DefaultGradleDependencyAnalyzerTest {
 
         // Mock setup with various dependency
         every { project.configurations } returns configurations
+        every { configurations.iterator() } returns mutableSetOf(apiConfig, implementationConfig, compileOnlyConfig, runtimeOnlyConfig).iterator()
         every { configurations.getByName("api") } returns apiConfig
         every { configurations.getByName("implementation") } returns implementationConfig
         every { configurations.getByName("compileOnly") } returns compileOnlyConfig
         every { configurations.getByName("runtimeOnly") } returns runtimeOnlyConfig
 
+        val apiResolvedConfiguration = mockk<ResolvedConfiguration>()
+        val implementationResolvedConfiguration = mockk<ResolvedConfiguration>()
+        val compileOnlyResolvedConfiguration = mockk<ResolvedConfiguration>()
+        val runtimeOnlyResolvedConfiguration = mockk<ResolvedConfiguration>()
+
         val apiDependency = mockk<ResolvedDependency>()
         val implDependency = mockk<ResolvedDependency>()
         val compileOnlyDependency = mockk<ResolvedDependency>()
-        val runtimeDependency = mockk<ResolvedDependency>()
+        val runtimeOnlyDependency = mockk<ResolvedDependency>()
 
-        every { apiConfig.resolvedConfiguration.firstLevelModuleDependencies } returns setOf(
-            apiDependency
-        )
-        every { implementationConfig.resolvedConfiguration.firstLevelModuleDependencies } returns setOf(
-            implDependency
-        )
-        every { compileOnlyConfig.resolvedConfiguration.firstLevelModuleDependencies } returns setOf(
-            compileOnlyDependency
-        )
-        every { runtimeOnlyConfig.resolvedConfiguration.firstLevelModuleDependencies } returns setOf(
-            runtimeDependency
-        )
-
+        // set dependency
+        every { apiConfig.resolvedConfiguration } returns apiResolvedConfiguration
+        every { apiConfig.isCanBeResolved } returns true
+        every { apiResolvedConfiguration.firstLevelModuleDependencies } returns setOf(apiDependency)
         every { apiDependency.moduleName } returns "jackson-databind"
-     
+        every { apiDependency.moduleGroup } returns "com.fasterxml.jackson.core"
+        every { apiDependency.moduleVersion } returns "2.15.2"
+ 
+        every { implementationConfig.resolvedConfiguration } returns implementationResolvedConfiguration
+        every { implementationConfig.isCanBeResolved } returns true
+        every { implementationResolvedConfiguration.firstLevelModuleDependencies } returns setOf(implDependency)
         every { implDependency.moduleName } returns "slf4j-api"
-     
+        every { implDependency.moduleGroup } returns "org.slf4j"
+        every { implDependency.moduleVersion } returns "1.7.36"
+ 
+        every { compileOnlyConfig.resolvedConfiguration } returns compileOnlyResolvedConfiguration
+        every { compileOnlyConfig.isCanBeResolved } returns true
+        every { compileOnlyResolvedConfiguration.firstLevelModuleDependencies } returns setOf(compileOnlyDependency)
         every { compileOnlyDependency.moduleName } returns "javax.annotation-api"
-     
-        every { runtimeDependency.moduleName } returns "logback-classic"
+        
+        every { runtimeOnlyConfig.resolvedConfiguration } returns runtimeOnlyResolvedConfiguration
+        every { runtimeOnlyConfig.isCanBeResolved } returns true
+        every { runtimeOnlyResolvedConfiguration.firstLevelModuleDependencies } returns setOf(runtimeOnlyDependency)
+        every { runtimeOnlyDependency.moduleName } returns "logback-classic"
 
         // When
         val result = analyzer.analyzeProject(project)
