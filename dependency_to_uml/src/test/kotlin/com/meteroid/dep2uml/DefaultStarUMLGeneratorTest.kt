@@ -10,7 +10,7 @@ import com.meteroid.dep2uml.model.DependencyType
 import com.meteroid.dep2uml.generator.DefaultStarUMLGenerator
 
 class DefaultStarUMLGeneratorTest {
-    
+
     @Test
     fun `should generate StarUML diagram file`(@TempDir tempDir: Path) {
         // Given
@@ -24,10 +24,10 @@ class DefaultStarUMLGeneratorTest {
             )
         )
         val outputPath = tempDir.resolve("test-diagram.mdj")
-        
+
         // When
         generator.generatePackageDiagram(dependencies, outputPath.toString())
-        
+
         // Then
         assertTrue(outputPath.exists())
         // TODO: Add more specific assertions about file content
