@@ -37,4 +37,5 @@ class DefaultGradleDependencyAnalyzer : GradleDependencyAnalyzer {
             )
         ) + dependency.children.flatMap { analyzeDependency(it, processed) }
     }
+
 }

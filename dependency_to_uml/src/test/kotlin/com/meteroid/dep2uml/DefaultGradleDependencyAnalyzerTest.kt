@@ -122,6 +122,11 @@ class DefaultGradleDependencyAnalyzerTest {
             assertEquals("guava", name)
             assertEquals("31.0.1-jre", version)
         }
+        with(result.last()) {
+            assertEquals("com.google.guava", group)
+            assertEquals("listenablefuture", name)
+            assertEquals("9999.0-empty-to-avoid-conflict", version)
+        }
     }
 
     @Test
@@ -160,6 +165,17 @@ class DefaultGradleDependencyAnalyzerTest {
         val result = analyzer.analyzeProject(project)
 
         // Then
+        assertEquals(2, result.size)
+        with(result.first()) {
+            assertEquals("com.example", group)
+            assertEquals("libA", name)
+            assertEquals("1.0.0", version)
+        }
+        with(result.last()) {
+            assertEquals("com.example", group)
+            assertEquals("libB", name)
+            assertEquals("1.0.0", version)
+        }
     }
 
     @Test
@@ -199,14 +215,27 @@ class DefaultGradleDependencyAnalyzerTest {
         )
 
         every { apiDependency.moduleName } returns "jackson-databind"
+     
         every { implDependency.moduleName } returns "slf4j-api"
+     
         every { compileOnlyDependency.moduleName } returns "javax.annotation-api"
+     
         every { runtimeDependency.moduleName } returns "logback-classic"
 
         // When
-        //val result = analyzer.analyzeProject(project)
+        val result = analyzer.analyzeProject(project)
 
         // Then
+        assertEquals(4, result.size)
+        with(result.first()) {
+            assertEquals("com.fasterxml.jackson.core", group)
+            assertEquals("jackson-databind", name)
+            assertEquals("2.15.2", version)
+        }
+        with(result.last()) {
+            assertEquals("org.slf4j", group)
+            assertEquals("slf4j-api", name)
+            assertEquals("1.7.36", version)
+        }
     }
-
 }
