@@ -13,13 +13,13 @@ class DefaultGradleDependencyAnalyzer : GradleDependencyAnalyzer {
             .flatMap { configuration ->
                 configuration.resolvedConfiguration
                     .firstLevelModuleDependencies
-                    .flatMap { analyzeDependency(it) }
+                    .flatMap { analyzeDependency(it, mutableSetOf(), configuration.name) }
             }
     }
 
     private fun analyzeDependency(
         dependency: ResolvedDependency,
-        processed: MutableSet<String> = mutableSetOf()
+        processed: MutableSet<String> = mutableSetOf(),
     ): List<DependencyInfo> {
         val key = "${dependency.moduleGroup}:${dependency.moduleName}"
         if (key in processed) {
@@ -36,6 +36,47 @@ class DefaultGradleDependencyAnalyzer : GradleDependencyAnalyzer {
                 type = DependencyType.IMPLEMENTATION
             )
         ) + dependency.children.flatMap { analyzeDependency(it, processed) }
+    }
+
+    private fun analyzeDependency(
+        dependency: ResolvedDependency,
+        processed: MutableSet<String> = mutableSetOf(),
+        configurationName: String,
+    ): List<DependencyInfo> {
+        val key = "${dependency.moduleGroup}:${dependency.moduleName}"
+        if (key in processed) {
+            return emptyList()
+        }
+
+        processed.add(key)
+
+        val typeOfConfigurationName = when {
+            configurationName.contains("api", false) -> {
+                DependencyType.API
+            }
+
+            configurationName.contains("implementation", false) -> {
+                DependencyType.IMPLEMENTATION
+            }
+
+            configurationName.contains("compileOnly", false) -> {
+                DependencyType.COMPILE_ONLY
+            }
+
+            else -> {
+                DependencyType.RUNTIME
+            }
+
+        }
+
+        return listOf(
+            DependencyInfo(
+                group = dependency.moduleGroup,
+                name = dependency.moduleName,
+                version = dependency.moduleVersion,
+                type = typeOfConfigurationName
+            )
+        ) + dependency.children.flatMap { analyzeDependency(it, processed, configurationName) }
     }
 
 }

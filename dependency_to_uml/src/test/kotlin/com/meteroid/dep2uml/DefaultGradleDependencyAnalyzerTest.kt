@@ -27,6 +27,7 @@ class DefaultGradleDependencyAnalyzerTest {
         every { project.configurations } returns configurations
         every { configurations.iterator() } returns mutableSetOf(configuration).iterator()
         every { configuration.isCanBeResolved } returns true
+        every { configuration.name } returns "implementation"
         every { configuration.resolvedConfiguration } returns resolvedConfiguration
         every { resolvedConfiguration.firstLevelModuleDependencies } returns setOf(
             resolvedDependency
@@ -62,6 +63,7 @@ class DefaultGradleDependencyAnalyzerTest {
         every { project.configurations } returns configurations
         every { configurations.iterator() } returns mutableSetOf(configuration).iterator()
         every { configuration.isCanBeResolved } returns true
+        every { configuration.name } returns "implementation"
         every { configuration.resolvedConfiguration } returns resolvedConfiguration
         every { resolvedConfiguration.firstLevelModuleDependencies } returns setOf(
             resolvedDependency
@@ -98,6 +100,7 @@ class DefaultGradleDependencyAnalyzerTest {
         every { project.configurations } returns configurations
         every { configurations.iterator() } returns mutableSetOf(configuration).iterator()
         every { configuration.isCanBeResolved } returns true
+        every { configuration.name } returns "implementation"
         every { configuration.resolvedConfiguration } returns resolvedConfiguration
         every { resolvedConfiguration.firstLevelModuleDependencies } returns setOf(parentDependency)
 
@@ -145,6 +148,7 @@ class DefaultGradleDependencyAnalyzerTest {
         every { project.configurations } returns configurations
         every { configurations.iterator() } returns mutableSetOf(configuration).iterator()
         every { configuration.isCanBeResolved } returns true
+        every { configuration.name } returns "implementation"
         every { configuration.resolvedConfiguration } returns resolvedConfiguration
         every { resolvedConfiguration.firstLevelModuleDependencies } returns setOf(
             dependencyA,
@@ -177,6 +181,32 @@ class DefaultGradleDependencyAnalyzerTest {
             assertEquals("libA", name)
             assertEquals("1.0.0", version)
         }
+        /*        result.forEach { dependencyInfo ->
+                    assertEquals("com.example", dependencyInfo.group)
+                    assertEquals("libA", dependencyInfo.name)
+                    assertEquals("1.0.0", dependencyInfo.version)
+
+                }*/
+        with(result[0]) {
+            assertEquals("com.example", group)
+            assertEquals("libA", name)
+            assertEquals("1.0.0", version)
+        }
+        with(result[1]) {
+            assertEquals("com.example", group)
+            assertEquals("libB", name)
+            assertEquals("1.0.0", version)
+        }
+        with(result[2]) {
+            assertEquals("com.example", group)
+            assertEquals("libB", name)
+            assertEquals("1.0.0", version)
+        }
+        with(result[3]) {
+            assertEquals("com.example", group)
+            assertEquals("libA", name)
+            assertEquals("1.0.0", version)
+        }
     }
 
     @Test
@@ -192,7 +222,12 @@ class DefaultGradleDependencyAnalyzerTest {
 
         // Mock setup with various dependency
         every { project.configurations } returns configurations
-        every { configurations.iterator() } returns mutableSetOf(apiConfig, implementationConfig, compileOnlyConfig, runtimeOnlyConfig).iterator()
+        every { configurations.iterator() } returns mutableSetOf(
+            apiConfig,
+            implementationConfig,
+            compileOnlyConfig,
+            runtimeOnlyConfig
+        ).iterator()
         every { configurations.getByName("api") } returns apiConfig
         every { configurations.getByName("implementation") } returns implementationConfig
         every { configurations.getByName("compileOnly") } returns compileOnlyConfig
@@ -211,15 +246,19 @@ class DefaultGradleDependencyAnalyzerTest {
         // set dependency
         every { apiConfig.resolvedConfiguration } returns apiResolvedConfiguration
         every { apiConfig.isCanBeResolved } returns true
+        every { apiConfig.name } returns "api"
         every { apiResolvedConfiguration.firstLevelModuleDependencies } returns setOf(apiDependency)
         every { apiDependency.moduleName } returns "jackson-databind"
         every { apiDependency.moduleGroup } returns "com.fasterxml.jackson.core"
         every { apiDependency.moduleVersion } returns "2.15.2"
         every { apiDependency.children } returns setOf()
- 
+
         every { implementationConfig.resolvedConfiguration } returns implementationResolvedConfiguration
         every { implementationConfig.isCanBeResolved } returns true
-        every { implementationResolvedConfiguration.firstLevelModuleDependencies } returns setOf(implDependency)
+        every { implementationConfig.name } returns "implementation"
+        every { implementationResolvedConfiguration.firstLevelModuleDependencies } returns setOf(
+            implDependency
+        )
         every { implDependency.moduleName } returns "slf4j-api"
         every { implDependency.moduleGroup } returns "org.slf4j"
         every { implDependency.moduleVersion } returns "1.7.36"
@@ -227,7 +266,10 @@ class DefaultGradleDependencyAnalyzerTest {
 
         every { compileOnlyConfig.resolvedConfiguration } returns compileOnlyResolvedConfiguration
         every { compileOnlyConfig.isCanBeResolved } returns true
-        every { compileOnlyResolvedConfiguration.firstLevelModuleDependencies } returns setOf(compileOnlyDependency)
+        every { compileOnlyConfig.name } returns "compileOnly"
+        every { compileOnlyResolvedConfiguration.firstLevelModuleDependencies } returns setOf(
+            compileOnlyDependency
+        )
         every { compileOnlyDependency.moduleName } returns "javax.annotation-api"
         every { compileOnlyDependency.moduleGroup } returns "org.javax"
         every { compileOnlyDependency.moduleVersion } returns "1.1.1"
@@ -235,7 +277,10 @@ class DefaultGradleDependencyAnalyzerTest {
 
         every { runtimeOnlyConfig.resolvedConfiguration } returns runtimeOnlyResolvedConfiguration
         every { runtimeOnlyConfig.isCanBeResolved } returns true
-        every { runtimeOnlyResolvedConfiguration.firstLevelModuleDependencies } returns setOf(runtimeOnlyDependency)
+        every { runtimeOnlyConfig.name } returns "runtimeOnly"
+        every { runtimeOnlyResolvedConfiguration.firstLevelModuleDependencies } returns setOf(
+            runtimeOnlyDependency
+        )
         every { runtimeOnlyDependency.moduleName } returns "logback-classic"
         every { runtimeOnlyDependency.moduleGroup } returns "org.logback"
         every { runtimeOnlyDependency.moduleVersion } returns "1.1.2"
