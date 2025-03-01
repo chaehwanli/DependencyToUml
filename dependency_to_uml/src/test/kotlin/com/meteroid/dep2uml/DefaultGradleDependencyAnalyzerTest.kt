@@ -1,5 +1,6 @@
 package com.meteroid.dep2uml.analyzer
 
+import com.meteroid.dep2uml.model.DependencyType
 import io.mockk.every
 import io.mockk.mockk
 import org.gradle.api.Project
@@ -165,7 +166,7 @@ class DefaultGradleDependencyAnalyzerTest {
         val result = analyzer.analyzeProject(project)
 
         // Then
-        assertEquals(2, result.size)
+        assertEquals(4, result.size)
         with(result.first()) {
             assertEquals("com.example", group)
             assertEquals("libA", name)
@@ -173,7 +174,7 @@ class DefaultGradleDependencyAnalyzerTest {
         }
         with(result.last()) {
             assertEquals("com.example", group)
-            assertEquals("libB", name)
+            assertEquals("libA", name)
             assertEquals("1.0.0", version)
         }
     }
@@ -214,6 +215,7 @@ class DefaultGradleDependencyAnalyzerTest {
         every { apiDependency.moduleName } returns "jackson-databind"
         every { apiDependency.moduleGroup } returns "com.fasterxml.jackson.core"
         every { apiDependency.moduleVersion } returns "2.15.2"
+        every { apiDependency.children } returns setOf()
  
         every { implementationConfig.resolvedConfiguration } returns implementationResolvedConfiguration
         every { implementationConfig.isCanBeResolved } returns true
@@ -221,16 +223,23 @@ class DefaultGradleDependencyAnalyzerTest {
         every { implDependency.moduleName } returns "slf4j-api"
         every { implDependency.moduleGroup } returns "org.slf4j"
         every { implDependency.moduleVersion } returns "1.7.36"
- 
+        every { implDependency.children } returns setOf()
+
         every { compileOnlyConfig.resolvedConfiguration } returns compileOnlyResolvedConfiguration
         every { compileOnlyConfig.isCanBeResolved } returns true
         every { compileOnlyResolvedConfiguration.firstLevelModuleDependencies } returns setOf(compileOnlyDependency)
         every { compileOnlyDependency.moduleName } returns "javax.annotation-api"
-        
+        every { compileOnlyDependency.moduleGroup } returns "org.javax"
+        every { compileOnlyDependency.moduleVersion } returns "1.1.1"
+        every { compileOnlyDependency.children } returns setOf()
+
         every { runtimeOnlyConfig.resolvedConfiguration } returns runtimeOnlyResolvedConfiguration
         every { runtimeOnlyConfig.isCanBeResolved } returns true
         every { runtimeOnlyResolvedConfiguration.firstLevelModuleDependencies } returns setOf(runtimeOnlyDependency)
         every { runtimeOnlyDependency.moduleName } returns "logback-classic"
+        every { runtimeOnlyDependency.moduleGroup } returns "org.logback"
+        every { runtimeOnlyDependency.moduleVersion } returns "1.1.2"
+        every { runtimeOnlyDependency.children } returns setOf()
 
         // When
         val result = analyzer.analyzeProject(project)
@@ -241,11 +250,13 @@ class DefaultGradleDependencyAnalyzerTest {
             assertEquals("com.fasterxml.jackson.core", group)
             assertEquals("jackson-databind", name)
             assertEquals("2.15.2", version)
+            assertEquals(DependencyType.API, type)
         }
         with(result.last()) {
-            assertEquals("org.slf4j", group)
-            assertEquals("slf4j-api", name)
-            assertEquals("1.7.36", version)
+            assertEquals("org.logback", group)
+            assertEquals("logback-classic", name)
+            assertEquals("1.1.2", version)
+            assertEquals(DependencyType.RUNTIME, type)
         }
     }
 }
