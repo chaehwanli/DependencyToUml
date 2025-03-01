@@ -215,11 +215,11 @@ class DefaultGradleDependencyAnalyzerTest {
         )
 
         every { apiDependency.moduleName } returns "jackson-databind"
-     
+
         every { implDependency.moduleName } returns "slf4j-api"
-     
+
         every { compileOnlyDependency.moduleName } returns "javax.annotation-api"
-     
+
         every { runtimeDependency.moduleName } returns "logback-classic"
 
         // When

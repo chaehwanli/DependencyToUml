@@ -6,7 +6,7 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.ResolvedDependency
 
 class DefaultGradleDependencyAnalyzer : GradleDependencyAnalyzer {
-    
+
     override fun analyzeProject(project: Project): List<DependencyInfo> {
         return project.configurations
             .filter { it.isCanBeResolved }
@@ -16,7 +16,7 @@ class DefaultGradleDependencyAnalyzer : GradleDependencyAnalyzer {
                     .flatMap { analyzeDependency(it) }
             }
     }
-    
+
     private fun analyzeDependency(
         dependency: ResolvedDependency,
         processed: MutableSet<String> = mutableSetOf()
@@ -25,9 +25,9 @@ class DefaultGradleDependencyAnalyzer : GradleDependencyAnalyzer {
         if (key in processed) {
             return emptyList()
         }
-        
+
         processed.add(key)
-        
+
         return listOf(
             DependencyInfo(
                 group = dependency.moduleGroup,

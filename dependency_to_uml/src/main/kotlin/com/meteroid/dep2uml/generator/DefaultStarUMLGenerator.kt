@@ -43,7 +43,7 @@ class DefaultStarUMLGenerator : StarUMLGenerator {
             }
             """.trimIndent()
         }
-        
+
         return packages.joinToString(",\n", prefix = "[", postfix = "]")
     }
 }
