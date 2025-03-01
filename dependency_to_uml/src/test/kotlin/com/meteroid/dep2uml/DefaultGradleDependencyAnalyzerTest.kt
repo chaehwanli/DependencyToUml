@@ -301,7 +301,7 @@ class DefaultGradleDependencyAnalyzerTest {
             assertEquals("org.logback", group)
             assertEquals("logback-classic", name)
             assertEquals("1.1.2", version)
-            assertEquals(DependencyType.RUNTIME, type)
+            assertEquals(DependencyType.RUNTIME_ONLY, type)
         }
     }
 }

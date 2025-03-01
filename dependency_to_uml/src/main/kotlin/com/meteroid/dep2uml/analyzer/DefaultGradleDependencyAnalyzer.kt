@@ -1,5 +1,6 @@
 package com.meteroid.dep2uml.analyzer
 
+import com.meteroid.dep2uml.model.DependencyConfiguration
 import com.meteroid.dep2uml.model.DependencyInfo
 import com.meteroid.dep2uml.model.DependencyType
 import org.gradle.api.Project
@@ -49,25 +50,8 @@ class DefaultGradleDependencyAnalyzer : GradleDependencyAnalyzer {
         }
 
         processed.add(key)
-
-        val typeOfConfigurationName = when {
-            configurationName.contains("api", false) -> {
-                DependencyType.API
-            }
-
-            configurationName.contains("implementation", false) -> {
-                DependencyType.IMPLEMENTATION
-            }
-
-            configurationName.contains("compileOnly", false) -> {
-                DependencyType.COMPILE_ONLY
-            }
-
-            else -> {
-                DependencyType.RUNTIME
-            }
-
-        }
+        val typeOfConfigurationName =
+            DependencyConfiguration.fromConfigurationName(configurationName)
 
         return listOf(
             DependencyInfo(
