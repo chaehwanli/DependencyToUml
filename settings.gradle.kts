@@ -12,4 +12,4 @@ plugins {
 }
 
 rootProject.name = "DependencyToUml"
-include("lib")
+include("dependency_to_uml")
