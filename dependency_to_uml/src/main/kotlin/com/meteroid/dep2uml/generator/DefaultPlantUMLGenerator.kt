@@ -14,10 +14,12 @@ class DefaultPlantUMLGenerator : PlantUMLGenerator {
         sb.append("@startuml\n")
         val packageMap = mutableMapOf<String, MutableList<String>>()
 
+        // Collecting package and class information
         dependencies.forEach { dep ->
             packageMap.computeIfAbsent(dep.group) { mutableListOf() }.add(dep.name)
         }
 
+        // Package and class definitions
         packageMap.forEach { (group, names) ->
             sb.append("package $group {\n")
             names.forEach { name ->
@@ -30,8 +32,11 @@ class DefaultPlantUMLGenerator : PlantUMLGenerator {
 
         // 의존성 관계 추가
         dependencies.forEach { dep ->
-            // 예시: 의존성 관계를 추가하는 로직
-            sb.append("${dep.name} --> ${dep.name}\n") // 실제 의존성 이름을 사용
+            // Add relationships using actual dependency names
+            // For example, let dep.dependencies be a list of names of other packages that the dependency depends on.
+            dep.dependencies.forEach { dependencyName ->
+                sb.append("    ${dep.name} --> $dependencyName\n")
+            }
         }
 
         sb.append("@enduml")
