@@ -35,7 +35,7 @@ class DefaultPlantUMLGenerator : PlantUMLGenerator {
             // Add relationships using actual dependency names
             // For example, let dep.dependencies be a list of names of other packages that the dependency depends on.
             dep.dependencies.forEach { dependencyName ->
-                sb.append("    ${dep.name} --> $dependencyName\n")
+                sb.append("${dep.group}.${dep.name} --> $dependencyName\n")
             }
         }
 

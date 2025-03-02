@@ -17,7 +17,7 @@ class DefaultPlantUMLGeneratorTest {
     fun `should generate Diagram`() {
         val plantUMLGenerator = DefaultPlantUMLGenerator()
 
-        plantUMLGenerator.generateDiagram(emptyList(), "output.uml")
+        plantUMLGenerator.generateDiagram(emptyList(), "test_output.uml")
         assertEquals(true, plantUMLGenerator != null)
     }
 
@@ -81,8 +81,8 @@ class DefaultPlantUMLGeneratorTest {
                     version : 2.0.0
                 }
             }
-            libraryA --> libraryB
-            libraryA --> libraryC
+            com.example.libraryA --> com.example.utils.libraryB
+            com.example.libraryA --> org.example.libraryC
             @enduml
         """.trimIndent()
 

@@ -2,6 +2,7 @@
 .gradle/
 build/
 bin/
+dependency_to_uml/test_output.uml
 
 # IDE
 .idea/
