@@ -1,6 +1,9 @@
 package com.meteroid.dep2uml.generator
 
 import com.meteroid.dep2uml.analyzer.DefaultGradleDependencyAnalyzer
+
+import java.io.File
+
 import io.mockk.mockk
 import io.mockk.every
 import org.gradle.api.Project
@@ -11,18 +14,67 @@ import org.junit.jupiter.api.Assertions.assertEquals
 
 import org.junit.jupiter.api.Test
 
+private const val testOutputUmlFile = "test_output.uml"
+
 class DefaultPlantUMLGeneratorTest {
 
     @Test
     fun `should generate Diagram`() {
-        val plantUMLGenerator = DefaultPlantUMLGenerator()
+        // prepare mockk Project class
+        val project = getMockkProject()
 
-        plantUMLGenerator.generateDiagram(emptyList(), "test_output.uml")
-        assertEquals(true, plantUMLGenerator != null)
+        // Running PlantUML string generation function
+        val analyzer = DefaultGradleDependencyAnalyzer()
+        val defaultPlantUMLGenerator = DefaultPlantUMLGenerator()
+        defaultPlantUMLGenerator.generateDiagram(
+            analyzer.analyzeProject(project),
+            testOutputUmlFile
+        )
+
+        assertEquals(getExpectedPlantUml(), testOutputUmlFile.readTextFile())
     }
 
     @Test
     fun `should generate correct PlantUML string with package and dependencies`() {
+        // prepare mockk Project class
+        val project = getMockkProject()
+
+        // Running PlantUML string generation function
+        val analyzer = DefaultGradleDependencyAnalyzer()
+        val defaultPlantUMLGenerator = DefaultPlantUMLGenerator()
+        val result = defaultPlantUMLGenerator.buildPlantUMLContent(analyzer.analyzeProject(project))
+
+        // verify with expected PlantUML string
+        assertEquals(getExpectedPlantUml(), result)
+    }
+
+    private fun getExpectedPlantUml(): String {
+        // Expected PlantUML string
+        val expected = """
+                @startuml
+                package com.example {
+                    class libraryA {
+                        version : 1.0.0
+                    }
+                }
+                package com.example.utils {
+                    class libraryB {
+                        version : 1.2.0
+                    }
+                }
+                package org.example {
+                    class libraryC {
+                        version : 2.0.0
+                    }
+                }
+                com.example.libraryA --> com.example.utils.libraryB
+                com.example.libraryA --> org.example.libraryC
+                @enduml
+            """.trimIndent()
+        return expected
+    }
+
+    private fun getMockkProject(): Project {
         // Mock project and configuration
         val project = mockk<Project>()
         val configuration = mockk<Configuration>()
@@ -57,36 +109,10 @@ class DefaultPlantUMLGeneratorTest {
         every { dependencyC.moduleName } returns "libraryC"
         every { dependencyC.moduleVersion } returns "2.0.0"
         every { dependencyC.children } returns emptySet()
+        return project
+    }
 
-        // Running PlantUML string generation function
-        val analyzer = DefaultGradleDependencyAnalyzer()
-        val defaultPlantUMLGenerator = DefaultPlantUMLGenerator()
-        val result = defaultPlantUMLGenerator.buildPlantUMLContent(analyzer.analyzeProject(project))
-
-        // 예상되는 PlantUML 문자열
-        val expected = """
-            @startuml
-            package com.example {
-                class libraryA {
-                    version : 1.0.0
-                }
-            }
-            package com.example.utils {
-                class libraryB {
-                    version : 1.2.0
-                }
-            }
-            package org.example {
-                class libraryC {
-                    version : 2.0.0
-                }
-            }
-            com.example.libraryA --> com.example.utils.libraryB
-            com.example.libraryA --> org.example.libraryC
-            @enduml
-        """.trimIndent()
-
-        // 결과 검증
-        assertEquals(expected, result)
+    private fun String.readTextFile(): String {
+        return File(this).readText()
     }
 }
