@@ -1,2 +1,2 @@
 # DependencyToUml
-A program that creates a package relationship using staruml by referring to the dependency relationship.
+A program that creates a package relationship using uml by referring to the dependency relationship.
