@@ -35,7 +35,7 @@ open class GenerateDependencyToUMLTask : DefaultTask() {
         val dependencies = analyzer.analyzeProject(project)
 
         // 출력 파일 경로
-        val outputFile = File("${project.buildDir}/dependencyToUML.uml")
+        val outputFile = File("${project.layout.buildDirectory.asFile.get()}/dependencyToUML.uml")
 
         // 필요한 디렉토리 생성
         outputFile.parentFile.mkdirs() // 부모 디렉토리 생성
