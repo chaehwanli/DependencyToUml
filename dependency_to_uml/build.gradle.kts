@@ -13,6 +13,7 @@ plugins {
     kotlin("jvm") version "1.9.21"
     `java-gradle-plugin`
     `maven-publish`
+    id("com.gradle.plugin-publish") version "1.2.1"
 }
 
 repositories {
@@ -76,10 +77,46 @@ group = "com.meteroid"
 version = "0.3.1"
 
 gradlePlugin {
+    website = "https://github.com/chaehwanli/DependencyToUml"
+    vcsUrl = "https://github.com/chaehwanli/DependencyToUml.git"
     plugins {
         create("dependencyToUMLPlugin") {
             id = "com.meteroid.dep2uml"
             implementationClass = "com.meteroid.dep2uml.plugin.DependencyToUMLPlugin"
+            displayName = "Dependency To UML Plugin"
+            description =
+                "A program that creates a package relationship using uml by referring to the dependency relationship."
+            tags.set(listOf("gradle", "plugin", "dependency"))
         }
     }
 }
+
+publishing {
+    repositories {
+        maven {
+            name = "GradlePluginPortal"
+            url = uri("https://plugins.gradle.org/m2/")
+            credentials {
+                username = providers.gradleProperty("gradle.publish.key").orNull ?: System.getenv("GRADLE_PUBLISH_KEY")
+                password = providers.gradleProperty("gradle.publish.secret").orNull ?: System.getenv("GRADLE_PUBLISH_SECRET")
+            }
+        }
+    }
+}
+
+/*
+tasks.withType<com.gradle.publish.PublishTask>().configureEach {
+    website.set(providers.gradleProperty("pluginWebsite").orElse("https://github.com/chaehwanli/DependencyToUml"))
+    vcsUrl.set(providers.gradleProperty("pluginVcsUrl").orElse("https://github.com/chaehwanli/DependencyToUml.git"))
+    tags.set(listOf("gradle", "plugin", "dependency"))
+}
+*/
+
+/*
+pluginBundle {
+    website = "https://github.com/chaehwanli/DependencyToUml"
+    vcsUrl = "https://github.com/chaehwanli/DependencyToUml.git"
+    description = "A program that creates a package relationship using uml by referring to the dependency relationship."
+    tags = listOf("gradle", "plugin", "dependency")
+}
+*/
