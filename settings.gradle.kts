@@ -13,3 +13,4 @@ plugins {
 
 rootProject.name = "DependencyToUml"
 include("dependency_to_uml")
+include(":dependency_to_uml_plugin")
