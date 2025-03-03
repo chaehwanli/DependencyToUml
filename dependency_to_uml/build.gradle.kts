@@ -11,6 +11,8 @@ plugins {
     `java-library`
     `kotlin-dsl`
     kotlin("jvm") version "1.9.21"
+    `java-gradle-plugin`
+    `maven-publish`
 }
 
 repositories {
@@ -68,4 +70,16 @@ java {
 
 tasks.test {
     useJUnitPlatform()  // JUnit 5 사용 설정
+}
+
+group = "com.meteroid"
+version = "0.3.1"
+
+gradlePlugin {
+    plugins {
+        create("dependencyToUMLPlugin") {
+            id = "com.meteroid.dep2uml"
+            implementationClass = "com.meteroid.dep2uml.plugin.DependencyToUMLPlugin"
+        }
+    }
 }
