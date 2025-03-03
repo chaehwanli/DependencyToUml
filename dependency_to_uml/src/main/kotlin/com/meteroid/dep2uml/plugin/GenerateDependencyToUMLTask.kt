@@ -22,8 +22,9 @@ import com.meteroid.dep2uml.analyzer.DefaultGradleDependencyAnalyzer
 import com.meteroid.dep2uml.generator.DefaultPlantUMLGenerator
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
+import java.io.File
 
-class GenerateDependencyToUMLTask : DefaultTask() {
+open class GenerateDependencyToUMLTask : DefaultTask() {
     @TaskAction
     fun generateDiagram() {
         // 의존성 분석 및 다이어그램 생성 로직
@@ -31,7 +32,15 @@ class GenerateDependencyToUMLTask : DefaultTask() {
         val analyzer = DefaultGradleDependencyAnalyzer()
         val generator = DefaultPlantUMLGenerator()
 
+        val dependencies = analyzer.analyzeProject(project)
+
+        // 출력 파일 경로
+        val outputFile = File("${project.buildDir}/dependency-diagram.puml")
+
+        // 필요한 디렉토리 생성
+        outputFile.parentFile.mkdirs() // 부모 디렉토리 생성
+
         // 다이어그램 생성
-        generator.generateDiagram(analyzer.analyzeProject(project), "${project.buildDir}/dependency-diagram.puml")
+        generator.generateDiagram(dependencies, outputFile.absolutePath)
     }
 }
