@@ -24,10 +24,10 @@ import org.gradle.api.Project
 class DependencyToUMLPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         // 플러그인 설정
-        target.extensions.create("dependencyDiagram", DependencyToUMLExtension::class.java)
+        target.extensions.create("DependencyToUML", DependencyToUMLExtension::class.java)
 
         // 태스크 등록
-        target.tasks.register("generateDependencyDiagram", GenerateDependencyToUMLTask::class.java) {
+        target.tasks.register("GenerateDependencyToUML", GenerateDependencyToUMLTask::class.java) {
             // 태스크의 기본 설정을 여기에 추가할 수 있습니다.
         }
     }

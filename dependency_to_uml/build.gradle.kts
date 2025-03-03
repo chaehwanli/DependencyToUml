@@ -44,6 +44,9 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.11.1")
     testImplementation("org.junit.jupiter:junit-jupiter-migrationsupport:5.11.1")
     testImplementation(libs.junit.jupiter)
+
+    testImplementation(gradleTestKit()) // Gradle TestKit 추가
+    testImplementation(kotlin("test"))  // Kotlin Test 추가
 }
 
 testing {
