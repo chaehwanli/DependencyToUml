@@ -28,7 +28,7 @@ open class GenerateDependencyToUMLTask : DefaultTask() {
     @TaskAction
     fun generateDiagram() {
         // 의존성 분석 및 다이어그램 생성 로직
-        val project = project
+        val project = this.project
         val analyzer = DefaultGradleDependencyAnalyzer()
         val generator = DefaultPlantUMLGenerator()
 

@@ -30,7 +30,7 @@ class DependencyToUMLPluginTest {
         val project = ProjectBuilder.builder().build()
 
         // When: 플러그인 적용
-        project.pluginManager.apply("com.meteroid.dep2uml")
+        project.pluginManager.apply("com.meteroid.dep2uml.dependencyToUMLPlugin")
 
         // Then: 특정 Task가 등록되었는지 확인
         val task = project.tasks.findByName("GenerateDependencyToUML")
