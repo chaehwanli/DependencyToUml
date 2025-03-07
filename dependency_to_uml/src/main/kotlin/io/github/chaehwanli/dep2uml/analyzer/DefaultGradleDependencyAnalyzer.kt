@@ -1,0 +1,88 @@
+/*
+ *
+ * Copyright 2025 chaehwan.li@gmail.com
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+package io.github.chaehwanli.dep2uml.analyzer
+
+import io.github.chaehwanli.dep2uml.model.DependencyConfiguration
+import io.github.chaehwanli.dep2uml.model.DependencyInfo
+import io.github.chaehwanli.dep2uml.model.DependencyType
+import org.gradle.api.Project
+import org.gradle.api.artifacts.ResolvedDependency
+
+class DefaultGradleDependencyAnalyzer :
+    io.github.chaehwanli.dep2uml.analyzer.GradleDependencyAnalyzer {
+
+    override fun analyzeProject(project: Project): List<io.github.chaehwanli.dep2uml.model.DependencyInfo> {
+        return project.configurations
+            .filter { it.isCanBeResolved }
+            .flatMap { configuration ->
+                configuration.resolvedConfiguration
+                    .firstLevelModuleDependencies
+                    .flatMap { analyzeDependency(it, mutableSetOf(), configuration.name) }
+            }
+    }
+
+    private fun analyzeDependency(
+        dependency: ResolvedDependency,
+        processed: MutableSet<String> = mutableSetOf(),
+    ): List<io.github.chaehwanli.dep2uml.model.DependencyInfo> {
+        val key = "${dependency.moduleGroup}:${dependency.moduleName}"
+        if (key in processed) {
+            return emptyList()
+        }
+
+        processed.add(key)
+
+        return listOf(
+            io.github.chaehwanli.dep2uml.model.DependencyInfo(
+                group = dependency.moduleGroup,
+                name = dependency.moduleName,
+                version = dependency.moduleVersion,
+                type = DependencyType.IMPLEMENTATION
+            )
+        ) + dependency.children.flatMap { analyzeDependency(it, processed) }
+    }
+
+    private fun analyzeDependency(
+        dependency: ResolvedDependency,
+        processed: MutableSet<String> = mutableSetOf(),
+        configurationName: String,
+    ): List<io.github.chaehwanli.dep2uml.model.DependencyInfo> {
+        val key = "${dependency.moduleGroup}:${dependency.moduleName}"
+        if (key in processed) {
+            return emptyList()
+        }
+
+        processed.add(key)
+        val typeOfConfigurationName =
+            DependencyConfiguration.fromConfigurationName(configurationName)
+
+        val childDependencies = dependency.children.map { "${it.moduleGroup}.${it.moduleName}" }
+
+        return listOf(
+            io.github.chaehwanli.dep2uml.model.DependencyInfo(
+                group = dependency.moduleGroup,
+                name = dependency.moduleName,
+                version = dependency.moduleVersion,
+                type = typeOfConfigurationName,
+                dependencies = childDependencies
+            )
+        ) + dependency.children.flatMap { analyzeDependency(it, processed, configurationName) }
+    }
+
+}
