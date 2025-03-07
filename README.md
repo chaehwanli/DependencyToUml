@@ -4,6 +4,18 @@ A program that creates a package relationship using uml by referring to the depe
 # Build
 
 # Usage
+
+Example
+```gradle
+dependencies {
+...
+    implementation(com.example:libraryA:1.0.0)
+    implementation(com.example.utils:libraryB:1.2.0)
+    implementation(org.example:libraryC:2.0.0)
+...
+}
+
+```
 generated uml file : verify with [plantUML Online](https://plantuml.online)
 ```uml
 @startuml
