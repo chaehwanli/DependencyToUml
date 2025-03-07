@@ -27,10 +27,10 @@ class DependencyConfigurationTest {
     @Test
     fun valueOf() {
         val dependencyConfiguration =
-            io.github.chaehwanli.dep2uml.model.DependencyConfiguration.Companion.fromConfigurationName(
+            DependencyConfiguration.Companion.fromConfigurationName(
                 "api"
             )
 
-        assertEquals(io.github.chaehwanli.dep2uml.model.DependencyType.API, dependencyConfiguration)
+        assertEquals(DependencyType.API, dependencyConfiguration)
     }
 }

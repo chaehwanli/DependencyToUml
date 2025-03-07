@@ -21,5 +21,5 @@ package io.github.chaehwanli.dep2uml.generator
 import io.github.chaehwanli.dep2uml.model.DependencyInfo
 
 interface StarUMLGenerator {
-    fun generatePackageDiagram(dependencies: List<io.github.chaehwanli.dep2uml.model.DependencyInfo>, outputPath: String)
+    fun generatePackageDiagram(dependencies: List<DependencyInfo>, outputPath: String)
 }

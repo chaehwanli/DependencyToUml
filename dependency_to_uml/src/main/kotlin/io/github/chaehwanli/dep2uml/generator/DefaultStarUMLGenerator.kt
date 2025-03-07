@@ -23,12 +23,12 @@ import java.nio.file.Paths
 import kotlin.io.path.writeText
 
 class DefaultStarUMLGenerator : StarUMLGenerator {
-    override fun generatePackageDiagram(dependencies: List<io.github.chaehwanli.dep2uml.model.DependencyInfo>, outputPath: String) {
+    override fun generatePackageDiagram(dependencies: List<DependencyInfo>, outputPath: String) {
         val diagram = createStarUMLDiagram(dependencies)
         Paths.get(outputPath).writeText(diagram)
     }
 
-    private fun createStarUMLDiagram(dependencies: List<io.github.chaehwanli.dep2uml.model.DependencyInfo>): String {
+    private fun createStarUMLDiagram(dependencies: List<DependencyInfo>): String {
         // StarUML MDJ 형식의 기본 템플릿
         return """
         {
@@ -51,7 +51,7 @@ class DefaultStarUMLGenerator : StarUMLGenerator {
         """.trimIndent()
     }
 
-    private fun generatePackageElements(dependencies: List<io.github.chaehwanli.dep2uml.model.DependencyInfo>): String {
+    private fun generatePackageElements(dependencies: List<DependencyInfo>): String {
         val packages = dependencies.map { dep ->
             """
             {
