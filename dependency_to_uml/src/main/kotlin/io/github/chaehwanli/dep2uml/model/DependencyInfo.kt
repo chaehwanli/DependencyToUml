@@ -22,6 +22,6 @@ data class DependencyInfo(
     val group: String,
     val name: String,
     val version: String,
-    val type: io.github.chaehwanli.dep2uml.model.DependencyType,
+    val type: DependencyType,
     val dependencies: List<String> = emptyList()
 )

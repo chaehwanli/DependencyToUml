@@ -22,12 +22,12 @@ import io.github.chaehwanli.dep2uml.model.DependencyInfo
 import java.io.File
 
 class DefaultPlantUMLGenerator : PlantUMLGenerator {
-    override fun generateDiagram(dependencies: List<io.github.chaehwanli.dep2uml.model.DependencyInfo>, outputPath: String) {
+    override fun generateDiagram(dependencies: List<DependencyInfo>, outputPath: String) {
         val plantUMLContent = buildPlantUMLContent(dependencies)
         File(outputPath).writeText(plantUMLContent)
     }
 
-    fun buildPlantUMLContent(dependencies: List<io.github.chaehwanli.dep2uml.model.DependencyInfo>): String {
+    fun buildPlantUMLContent(dependencies: List<DependencyInfo>): String {
         val sb = StringBuilder()
         sb.append("@startuml\n")
         val packageMap = mutableMapOf<String, MutableList<String>>()

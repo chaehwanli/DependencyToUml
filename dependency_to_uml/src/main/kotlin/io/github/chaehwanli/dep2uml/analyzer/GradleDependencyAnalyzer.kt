@@ -22,5 +22,5 @@ import io.github.chaehwanli.dep2uml.model.DependencyInfo
 import org.gradle.api.Project
 
 interface GradleDependencyAnalyzer {
-    fun analyzeProject(project: Project): List<io.github.chaehwanli.dep2uml.model.DependencyInfo>
+    fun analyzeProject(project: Project): List<DependencyInfo>
 }

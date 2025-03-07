@@ -34,7 +34,7 @@ class DefaultStarUMLGeneratorTest {
         // Given
         val generator = DefaultStarUMLGenerator()
         val dependencies = listOf(
-            io.github.chaehwanli.dep2uml.model.DependencyInfo(
+            DependencyInfo(
                 group = "org.springframework",
                 name = "spring-core",
                 version = "5.3.0",
