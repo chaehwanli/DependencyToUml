@@ -30,7 +30,7 @@ dependencies {
 }
 
 ```
-## generated uml file : 
+## generat uml as file : 
 ```uml
 @startuml
 package com.example {
