@@ -53,6 +53,7 @@ com.example.libraryA --> org.example.libraryC
 @enduml
 ```
 ## verify with [plantUML Online](https://plantuml.online)
+![image](https://github.com/user-attachments/assets/dcc32a7d-e836-4c39-b041-d2e0aa087cd5)
 
 # License
 Copyright 2025 chaehwan.li@gmail.com
