@@ -73,8 +73,8 @@ tasks.test {
     useJUnitPlatform()  // JUnit 5 사용 설정
 }
 
-group = "com.meteroid"
-version = "0.3.1"
+group = "io.github.chaehwanli"
+version = "0.3.2"
 
 gradlePlugin {
     website = "https://github.com/chaehwanli/DependencyToUml"
