@@ -65,7 +65,7 @@ testing {
 // Apply a specific Java toolchain to ease working on different environments.
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
@@ -74,7 +74,7 @@ tasks.test {
 }
 
 group = "io.github.chaehwanli"
-version = "0.3.2"
+version = "0.3.3"
 
 gradlePlugin {
     website = "https://github.com/chaehwanli/DependencyToUml"
