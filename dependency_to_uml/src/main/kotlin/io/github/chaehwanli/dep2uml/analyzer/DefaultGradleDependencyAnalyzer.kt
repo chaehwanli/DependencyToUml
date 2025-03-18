@@ -18,8 +18,8 @@
 
 package io.github.chaehwanli.dep2uml.analyzer
 
-import io.github.chaehwanli.dep2uml.model.DependencyConfiguration
 import io.github.chaehwanli.dep2uml.model.DependencyInfo
+import io.github.chaehwanli.dep2uml.model.DependencyResolver
 import io.github.chaehwanli.dep2uml.model.DependencyType
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ResolvedDependency
@@ -27,8 +27,11 @@ import org.gradle.api.artifacts.ResolvedDependency
 class DefaultGradleDependencyAnalyzer : GradleDependencyAnalyzer {
 
     override fun analyzeProject(project: Project): List<DependencyInfo> {
+        val keywords = DependencyResolver.getKeywords()
         return project.configurations
-            .filter { it.isCanBeResolved }
+            .filter { it ->
+                it.isCanBeResolved && keywords.any { keyword -> it.name.equals(keyword, ignoreCase = true) }
+            }
             .flatMap { configuration ->
                 configuration.resolvedConfiguration
                     .firstLevelModuleDependencies
@@ -69,7 +72,7 @@ class DefaultGradleDependencyAnalyzer : GradleDependencyAnalyzer {
 
         processed.add(key)
         val typeOfConfigurationName =
-            DependencyConfiguration.fromConfigurationName(configurationName)
+            DependencyResolver.resolve(configurationName)
 
         val childDependencies = dependency.children.map { "${it.moduleGroup}.${it.moduleName}" }
 
