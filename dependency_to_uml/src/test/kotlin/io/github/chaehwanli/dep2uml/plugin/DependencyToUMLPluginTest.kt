@@ -33,8 +33,8 @@ class DependencyToUMLPluginTest {
         project.pluginManager.apply("io.github.chaehwanli.dep2uml.dependencyToUMLPlugin")
 
         // Then: 특정 Task가 등록되었는지 확인
-        val task = project.tasks.findByName("GenerateDependencyToUML")
-        assertNotNull(task, "GenerateDependencyToUML 태스크가 존재해야 합니다.")
+        val task = project.tasks.findByName("generateDependencyToUML")
+        assertNotNull(task, "generateDependencyToUML 태스크가 존재해야 합니다.")
         assertTrue(task is GenerateDependencyToUMLTask, "태스크 타입이 올바르지 않습니다.")
     }
 }

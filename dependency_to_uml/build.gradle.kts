@@ -74,7 +74,7 @@ tasks.test {
 }
 
 group = "io.github.chaehwanli"
-version = "0.3.5"
+version = "0.3.6"
 
 gradlePlugin {
     website = "https://github.com/chaehwanli/DependencyToUml"
