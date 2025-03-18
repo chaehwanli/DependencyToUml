@@ -27,7 +27,7 @@ class DependencyToUMLPlugin : Plugin<Project> {
         //target.extensions.create("DependencyToUML", DependencyToUMLExtension::class.java)
 
         // 태스크 등록
-        target.tasks.register("GenerateDependencyToUML", GenerateDependencyToUMLTask::class.java) {
+        target.tasks.register("generateDependencyToUML", GenerateDependencyToUMLTask::class.java) {
             // 태스크의 기본 설정을 여기에 추가할 수 있습니다.
         }
     }
