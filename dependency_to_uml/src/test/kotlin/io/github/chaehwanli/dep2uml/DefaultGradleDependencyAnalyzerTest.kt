@@ -322,4 +322,112 @@ class DefaultGradleDependencyAnalyzerTest {
             assertEquals(DependencyType.RUNTIME_ONLY, type)
         }
     }
+
+    @Test
+    fun `should analysis of various dependency types with jacoco`() {
+        // Given
+        val analyzer = DefaultGradleDependencyAnalyzer()
+        val project = mockk<Project>()
+        val configurations = mockk<ConfigurationContainer>()
+        val apiConfig = mockk<Configuration>()
+        val implementationConfig = mockk<Configuration>()
+        val compileOnlyConfig = mockk<Configuration>()
+        val runtimeOnlyConfig = mockk<Configuration>()
+        val jacocoConfig = mockk<Configuration>()
+
+        // Mock setup with various dependency
+        every { project.configurations } returns configurations
+        every { configurations.iterator() } returns mutableSetOf(
+            apiConfig,
+            implementationConfig,
+            compileOnlyConfig,
+            jacocoConfig,
+            runtimeOnlyConfig
+        ).iterator()
+        every { configurations.getByName("api") } returns apiConfig
+        every { configurations.getByName("implementation") } returns implementationConfig
+        every { configurations.getByName("compileOnly") } returns compileOnlyConfig
+        every { configurations.getByName("runtimeOnly") } returns runtimeOnlyConfig
+        every { configurations.getByName("jacoco") } returns jacocoConfig
+
+        val apiResolvedConfiguration = mockk<ResolvedConfiguration>()
+        val implementationResolvedConfiguration = mockk<ResolvedConfiguration>()
+        val compileOnlyResolvedConfiguration = mockk<ResolvedConfiguration>()
+        val runtimeOnlyResolvedConfiguration = mockk<ResolvedConfiguration>()
+        val jacocoResolvedConfiguration = mockk<ResolvedConfiguration>()
+
+        val apiDependency = mockk<ResolvedDependency>()
+        val implDependency = mockk<ResolvedDependency>()
+        val compileOnlyDependency = mockk<ResolvedDependency>()
+        val runtimeOnlyDependency = mockk<ResolvedDependency>()
+
+        // set dependency
+        every { apiConfig.resolvedConfiguration } returns apiResolvedConfiguration
+        every { apiConfig.isCanBeResolved } returns true
+        every { apiConfig.name } returns "api"
+        every { apiResolvedConfiguration.firstLevelModuleDependencies } returns setOf(apiDependency)
+        every { apiDependency.moduleName } returns "jackson-databind"
+        every { apiDependency.moduleGroup } returns "com.fasterxml.jackson.core"
+        every { apiDependency.moduleVersion } returns "2.15.2"
+        every { apiDependency.children } returns setOf()
+
+        every { implementationConfig.resolvedConfiguration } returns implementationResolvedConfiguration
+        every { implementationConfig.isCanBeResolved } returns true
+        every { implementationConfig.name } returns "implementation"
+        every { implementationResolvedConfiguration.firstLevelModuleDependencies } returns setOf(
+            implDependency
+        )
+        every { implDependency.moduleName } returns "slf4j-api"
+        every { implDependency.moduleGroup } returns "org.slf4j"
+        every { implDependency.moduleVersion } returns "1.7.36"
+        every { implDependency.children } returns setOf()
+
+        every { compileOnlyConfig.resolvedConfiguration } returns compileOnlyResolvedConfiguration
+        every { compileOnlyConfig.isCanBeResolved } returns true
+        every { compileOnlyConfig.name } returns "compileOnly"
+        every { compileOnlyResolvedConfiguration.firstLevelModuleDependencies } returns setOf(
+            compileOnlyDependency
+        )
+        every { compileOnlyDependency.moduleName } returns "javax.annotation-api"
+        every { compileOnlyDependency.moduleGroup } returns "org.javax"
+        every { compileOnlyDependency.moduleVersion } returns "1.1.1"
+        every { compileOnlyDependency.children } returns setOf()
+
+        every { runtimeOnlyConfig.resolvedConfiguration } returns runtimeOnlyResolvedConfiguration
+        every { runtimeOnlyConfig.isCanBeResolved } returns true
+        every { runtimeOnlyConfig.name } returns "runtimeOnly"
+        every { runtimeOnlyResolvedConfiguration.firstLevelModuleDependencies } returns setOf(
+            runtimeOnlyDependency
+        )
+        every { runtimeOnlyDependency.moduleName } returns "logback-classic"
+        every { runtimeOnlyDependency.moduleGroup } returns "org.logback"
+        every { runtimeOnlyDependency.moduleVersion } returns "1.1.2"
+        every { runtimeOnlyDependency.children } returns setOf()
+
+        every { jacocoConfig.resolvedConfiguration } returns jacocoResolvedConfiguration
+        every { jacocoConfig.isCanBeResolved } returns true
+        every { jacocoConfig.name } returns "jacofo"
+/*        every { jacocoConfig.firstLevelModuleDependencies } returns setOf(
+            compileOnlyDependency
+        )*/
+
+        // When
+        val result = analyzer.analyzeProject(project)
+
+        // Then
+        assertEquals(4, result.size)
+        with(result.first()) {
+            assertEquals("com.fasterxml.jackson.core", group)
+            assertEquals("jackson-databind", name)
+            assertEquals("2.15.2", version)
+            assertEquals(DependencyType.API, type)
+        }
+        with(result.last()) {
+            assertEquals("org.logback", group)
+            assertEquals("logback-classic", name)
+            assertEquals("1.1.2", version)
+            assertEquals(DependencyType.RUNTIME_ONLY, type)
+        }
+    }
+
 }
