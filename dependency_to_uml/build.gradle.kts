@@ -50,6 +50,7 @@ dependencies {
 
     testImplementation(gradleTestKit()) // Gradle TestKit 추가
     testImplementation(kotlin("test"))  // Kotlin Test 추가
+    testImplementation("org.jetbrains.kotlin:kotlin-reflect:1.9.22")
 }
 
 testing {
