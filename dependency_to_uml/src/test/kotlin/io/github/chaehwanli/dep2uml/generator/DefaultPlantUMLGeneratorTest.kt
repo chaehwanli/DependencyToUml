@@ -85,8 +85,8 @@ class DefaultPlantUMLGeneratorTest {
                         version : 2.0.0
                     }
                 }
-                com.example.libraryA --> com.example.utils.libraryB
-                com.example.libraryA --> org.example.libraryC
+                com.example --> com.example.utils
+                com.example --> org.example
                 @enduml
             """.trimIndent()
         return expected

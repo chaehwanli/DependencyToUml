@@ -23,6 +23,9 @@ import io.github.chaehwanli.dep2uml.generator.DefaultPlantUMLGenerator
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import java.io.File
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import kotlin.text.format
 
 open class GenerateDependencyToUMLTask : DefaultTask() {
     @TaskAction
@@ -34,8 +37,13 @@ open class GenerateDependencyToUMLTask : DefaultTask() {
 
         val dependencies = analyzer.analyzeProject(project)
 
+        val now = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
+        val formattedDateTime = now.format(formatter)
+        val dateTimeFileName = "dependencyToUML-$formattedDateTime.uml"
+
         // 출력 파일 경로
-        val outputFile = File("${project.layout.buildDirectory.asFile.get()}/dependencyToUML.uml")
+        val outputFile = File("${project.layout.buildDirectory.asFile.get()}/$dateTimeFileName")
 
         // 필요한 디렉토리 생성
         outputFile.parentFile.mkdirs() // 부모 디렉토리 생성
