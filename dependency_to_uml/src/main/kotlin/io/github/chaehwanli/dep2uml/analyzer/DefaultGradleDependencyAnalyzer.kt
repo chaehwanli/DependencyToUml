@@ -62,19 +62,19 @@ class DefaultGradleDependencyAnalyzer : GradleDependencyAnalyzer {
 
     private fun analyzeDependency(
         dependency: ResolvedDependency,
-        processed: MutableSet<String> = mutableSetOf(),
+        processedKeys: MutableSet<String> = mutableSetOf(),
         configurationName: String,
     ): List<DependencyInfo> {
         val key = "${dependency.moduleGroup}:${dependency.moduleName}"
-        if (key in processed) {
+        if (processedKeys.contains(key)) {
             return emptyList()
         }
 
-        processed.add(key)
+        processedKeys.add(key)
         val typeOfConfigurationName =
             DependencyResolver.resolve(configurationName)
 
-        val childDependencies = dependency.children.map { "${it.moduleGroup}.${it.moduleName}" }
+        val childDependencies = dependency.children.map { "${it.moduleGroup}.${it.moduleName}" }.toSet()
 
         return listOf(
             DependencyInfo(
@@ -84,7 +84,7 @@ class DefaultGradleDependencyAnalyzer : GradleDependencyAnalyzer {
                 type = typeOfConfigurationName,
                 dependencies = childDependencies
             )
-        ) + dependency.children.flatMap { analyzeDependency(it, processed, configurationName) }
+        ) + dependency.children.flatMap { analyzeDependency(it, processedKeys, configurationName) }
     }
 
 }

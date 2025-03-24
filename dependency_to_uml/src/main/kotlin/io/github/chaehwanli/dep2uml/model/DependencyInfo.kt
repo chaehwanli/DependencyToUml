@@ -23,5 +23,5 @@ data class DependencyInfo(
     val name: String,
     val version: String,
     val type: DependencyType,
-    val dependencies: List<String> = emptyList()
+    val dependencies: Set<String> = emptySet()
 )
