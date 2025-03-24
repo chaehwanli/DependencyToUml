@@ -74,7 +74,8 @@ class DefaultGradleDependencyAnalyzer : GradleDependencyAnalyzer {
         val typeOfConfigurationName =
             DependencyResolver.resolve(configurationName)
 
-        val childDependencies = dependency.children.map { "${it.moduleGroup}.${it.moduleName}" }.toSet()
+        //val childDependencies = dependency.children.map { "${it.moduleGroup}.${it.moduleName}" }.toSet()
+        val childDependencies = dependency.children.map { it.moduleGroup }.toSet()
 
         return listOf(
             DependencyInfo(
