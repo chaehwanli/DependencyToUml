@@ -34,6 +34,9 @@ dependencies {
     // plantUML : latest 1.2023.7 https://sourceforge.net/projects/plantuml/files/
     implementation("net.sourceforge.plantuml:plantuml:1.2023.7")
 
+    implementation("org.slf4j:slf4j-api:2.0.9")
+    implementation("ch.qos.logback:logback-classic:1.4.11")
+
     // Kotlin Test 의존성 추가
     testImplementation(kotlin("test"))
     testImplementation(kotlin("test-junit5"))
@@ -75,7 +78,7 @@ tasks.test {
 }
 
 group = "io.github.chaehwanli"
-version = "0.3.6"
+version = "0.3.10"
 
 gradlePlugin {
     website = "https://github.com/chaehwanli/DependencyToUml"
