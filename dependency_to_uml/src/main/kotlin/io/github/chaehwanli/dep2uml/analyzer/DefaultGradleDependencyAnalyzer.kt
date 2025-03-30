@@ -65,16 +65,17 @@ class DefaultGradleDependencyAnalyzer : GradleDependencyAnalyzer {
         processedKeys: MutableSet<String> = mutableSetOf(),
         configurationName: String,
     ): List<DependencyInfo> {
-        val key = "${dependency.moduleGroup}:${dependency.moduleName}"
-        if (processedKeys.contains(key)) {
-            return emptyList()
-        }
-
         // module group과 module name 중복 검사
         if (dependency.moduleGroup.equals(".${dependency.moduleName}", ignoreCase=false)) {
             //logger.warn("Module group과 module name이 중복됩니다: ${dependency.moduleGroup}:${dependency.moduleName}")
             return emptyList()
         }
+
+        val key = "${dependency.moduleGroup}:${dependency.moduleName}"
+        if (processedKeys.contains(key)) {
+            return emptyList()
+        }
+
         processedKeys.add(key)
         val typeOfConfigurationName =
             DependencyResolver.resolve(configurationName)
