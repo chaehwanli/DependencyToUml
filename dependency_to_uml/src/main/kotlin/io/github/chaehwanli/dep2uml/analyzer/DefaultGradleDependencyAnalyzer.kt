@@ -18,6 +18,7 @@
 
 package io.github.chaehwanli.dep2uml.analyzer
 
+import org.slf4j.LoggerFactory
 import io.github.chaehwanli.dep2uml.model.DependencyInfo
 import io.github.chaehwanli.dep2uml.model.DependencyResolver
 import io.github.chaehwanli.dep2uml.model.DependencyType
@@ -25,6 +26,7 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.ResolvedDependency
 
 class DefaultGradleDependencyAnalyzer : GradleDependencyAnalyzer {
+   private val logger = LoggerFactory.getLogger(DefaultGradleDependencyAnalyzer::class.java)
 
     override fun analyzeProject(project: Project): List<DependencyInfo> {
         val keywords = DependencyResolver.getKeywords()
@@ -65,13 +67,36 @@ class DefaultGradleDependencyAnalyzer : GradleDependencyAnalyzer {
         processedKeys: MutableSet<String> = mutableSetOf(),
         configurationName: String,
     ): List<DependencyInfo> {
-        // module group과 module name 중복 검사
-        if (dependency.moduleGroup.equals(".${dependency.moduleName}", ignoreCase=false)) {
-            //logger.warn("Module group과 module name이 중복됩니다: ${dependency.moduleGroup}:${dependency.moduleName}")
+
+        // group name과 module name 로그 출력
+        logger.info("#1 Group Name: ${dependency.moduleGroup}, Module Name: ${dependency.moduleName}")
+        /*
+        if (!dependency.moduleGroup.contains(".") 
+           || dependency.moduleGroup.contains("-") 
+           || dependency.moduleGroup.contains("_") 
+           || dependency.moduleName.contains("-")
+           || dependency.moduleName.contains("_")
+        ) {
+            // Q: is it alias case?
             return emptyList()
         }
+        */
 
-        val key = "${dependency.moduleGroup}:${dependency.moduleName}"
+        val moduleName = if (dependency.moduleGroup.equals(dependency.moduleName, ignoreCase=false)) {
+            // group name이 module name의 일부인 경우에만 제거
+            dependency.moduleName.split(".").last()
+        } else {
+            dependency.moduleName
+        }
+        logger.info("#2 Group Name: ${dependency.moduleGroup}, Module Name: ${moduleName}")
+        
+        // module group과 module name 중복 검사
+        //if (dependency.moduleGroup.equals(moduleName, ignoreCase=false)) {
+        //    logger.warn("Module group과 module name is duplicated: ${dependency.moduleGroup}:${moduleName}")
+        //    return emptyList()
+        //}
+
+        val key = "${dependency.moduleGroup}:${moduleName}"
         if (processedKeys.contains(key)) {
             return emptyList()
         }
@@ -86,7 +111,8 @@ class DefaultGradleDependencyAnalyzer : GradleDependencyAnalyzer {
         return listOf(
             DependencyInfo(
                 group = dependency.moduleGroup,
-                name = dependency.moduleName,
+                //name = dependency.moduleName,
+                name = moduleName,
                 version = dependency.moduleVersion,
                 type = typeOfConfigurationName,
                 dependencies = childDependencies
