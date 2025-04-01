@@ -40,10 +40,14 @@ class DefaultPlantUMLGenerator : PlantUMLGenerator {
         // Package and class definitions
         packageMap.forEach { (group, names) ->
             sb.append("package $group {\n")
-            names.forEach { name ->
-                sb.append("    class $name {\n")
-                sb.append("        version : ${dependencies.find { it.name == name }?.version}\n")
-                sb.append("    }\n")
+            if (names.isEmpty()) {
+                sb.append("        version : ${dependencies.find { it.group == group }?.version}\n")
+            } else {
+                names.forEach { name ->
+                    sb.append("    class $name {\n")
+                    sb.append("        version : ${dependencies.find { it.name == name }?.version}\n")
+                    sb.append("    }\n")
+                }
             }
             sb.append("}\n")
         }
@@ -54,7 +58,22 @@ class DefaultPlantUMLGenerator : PlantUMLGenerator {
             // For example, let dep.dependencies be a list of names of other packages that the dependency depends on.
             dep.dependencies.forEach { dependencyName ->
                 //sb.append("${dep.group}.${dep.name} --> $dependencyName\n")
-                sb.append("${dep.group} -> $dependencyName\n")
+                //sb.append("${dep.group} -> $dependencyName\n")
+                var sourceName = dep.group + "." + dep.name
+                var targetName = dependencyName
+
+                val quotedSourceName = if (sourceName.contains("-") || sourceName.contains("_")) {
+                    "\"$sourceName\""
+                } else {
+                    sourceName
+                }
+                val quotedTargetName = if (targetName.contains("-") || targetName.contains("_")) {
+                    "\"$targetName\""
+                } else {
+                    targetName
+                }
+                sb.append("$quotedSourceName --> $quotedTargetName\n")
+
             }
         }
 

@@ -70,7 +70,7 @@ class DefaultGradleDependencyAnalyzer : GradleDependencyAnalyzer {
 
         // group name과 module name 로그 출력
         logger.info("#1 Group Name: ${dependency.moduleGroup}, Module Name: ${dependency.moduleName}")
-
+        /*
         if (!dependency.moduleGroup.contains(".") 
            || dependency.moduleGroup.contains("-") 
            || dependency.moduleGroup.contains("_") 
@@ -80,6 +80,7 @@ class DefaultGradleDependencyAnalyzer : GradleDependencyAnalyzer {
             // Q: is it alias case?
             return emptyList()
         }
+        */
 
         val moduleName = if (dependency.moduleGroup.equals(dependency.moduleName, ignoreCase=false)) {
             // group name이 module name의 일부인 경우에만 제거
