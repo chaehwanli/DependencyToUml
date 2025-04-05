@@ -30,11 +30,11 @@ class DefaultPlantUMLGenerator : PlantUMLGenerator {
     fun buildPlantUMLContent(dependencies: List<DependencyInfo>): String {
         val sb = StringBuilder()
         sb.append("@startuml\n")
-        val packageMap = mutableMapOf<String, MutableList<String>>()
+        val packageMap = mutableMapOf<String, MutableSet<String>>()
 
         // Collecting package and class information
         dependencies.forEach { dep ->
-            packageMap.computeIfAbsent(dep.group) { mutableListOf() }.add(dep.name)
+            packageMap.computeIfAbsent(dep.group) { mutableSetOf() }.add(dep.name)
         }
 
         // Package and class definitions
@@ -53,30 +53,37 @@ class DefaultPlantUMLGenerator : PlantUMLGenerator {
         }
 
         // 의존성 관계 추가
+        sb.append("\n")
+        val processedRelations = mutableSetOf<String>()
         dependencies.forEach { dep ->
             // Add relationships using actual dependency names
             // For example, let dep.dependencies be a list of names of other packages that the dependency depends on.
             dep.dependencies.forEach { dependencyName ->
-                //sb.append("${dep.group}.${dep.name} --> $dependencyName\n")
-                //sb.append("${dep.group} -> $dependencyName\n")
                 var sourceName = dep.group + "." + dep.name
                 var targetName = dependencyName
 
-                val quotedSourceName = if (sourceName.contains("-") || sourceName.contains("_")) {
-                    "\"$sourceName\""
-                } else {
-                    sourceName
-                }
-                val quotedTargetName = if (targetName.contains("-") || targetName.contains("_")) {
-                    "\"$targetName\""
-                } else {
-                    targetName
-                }
-                sb.append("$quotedSourceName --> $quotedTargetName\n")
+                val sourceParts = sourceName.split(".")
+                val targetParts = targetName.split(".")
+                val isContained = sourceParts.zip(targetParts).all { (source, target) -> source == target }
 
+                if (!isContained) {
+                    val quotedSourceName = if (sourceName.contains("-") || sourceName.contains("_")) {
+                        "\"$sourceName\""
+                    } else {
+                        sourceName
+                    }
+                    val quotedTargetName = if (targetName.contains("-") || targetName.contains("_")) {
+                        "\"$targetName\""
+                    } else {
+                        targetName
+                    }
+                    val relation = "$quotedSourceName --> $quotedTargetName : ${dep.type}"
+                    if (processedRelations.add(relation)) {
+                        sb.append("$relation\n")
+                    }
+                }
             }
         }
-
         sb.append("@enduml")
         return sb.toString()
     }
