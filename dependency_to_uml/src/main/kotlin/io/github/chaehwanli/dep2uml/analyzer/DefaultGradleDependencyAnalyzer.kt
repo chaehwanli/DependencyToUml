@@ -70,17 +70,6 @@ class DefaultGradleDependencyAnalyzer : GradleDependencyAnalyzer {
 
         // group name과 module name 로그 출력
         logger.info("#1 Group Name: ${dependency.moduleGroup}, Module Name: ${dependency.moduleName}")
-        /*
-        if (!dependency.moduleGroup.contains(".") 
-           || dependency.moduleGroup.contains("-") 
-           || dependency.moduleGroup.contains("_") 
-           || dependency.moduleName.contains("-")
-           || dependency.moduleName.contains("_")
-        ) {
-            // Q: is it alias case?
-            return emptyList()
-        }
-        */
 
         val moduleName = if (dependency.moduleGroup.equals(dependency.moduleName, ignoreCase=false)) {
             // group name이 module name의 일부인 경우에만 제거
@@ -90,12 +79,6 @@ class DefaultGradleDependencyAnalyzer : GradleDependencyAnalyzer {
         }
         logger.info("#2 Group Name: ${dependency.moduleGroup}, Module Name: ${moduleName}")
         
-        // module group과 module name 중복 검사
-        //if (dependency.moduleGroup.equals(moduleName, ignoreCase=false)) {
-        //    logger.warn("Module group과 module name is duplicated: ${dependency.moduleGroup}:${moduleName}")
-        //    return emptyList()
-        //}
-
         val key = "${dependency.moduleGroup}:${moduleName}"
         if (processedKeys.contains(key)) {
             return emptyList()
@@ -105,14 +88,12 @@ class DefaultGradleDependencyAnalyzer : GradleDependencyAnalyzer {
         val typeOfConfigurationName =
             DependencyResolver.resolve(configurationName)
 
-        //val childDependencies = dependency.children.map { "${it.moduleGroup}.${it.moduleName}" }.toSet()
         val childDependencies = dependency.children.map { it.moduleGroup }.toSet()
 
         return listOf(
             DependencyInfo(
                 group = dependency.moduleGroup,
-                //name = dependency.moduleName,
-                name = moduleName,
+                name = moduleName,  // name = dependency.moduleName,
                 version = dependency.moduleVersion,
                 type = typeOfConfigurationName,
                 dependencies = childDependencies
